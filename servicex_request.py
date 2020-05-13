@@ -23,15 +23,15 @@ def _load_requests():
     # for sam in samples:
     # selection = get_selection(confFile, sam)
     # variable = full_config['Region0']['Variable'].split(",")[0]
-    selection = "tau_0_leadTrk_pt > 0"
-    variable = "tau_0_leadTrk_pt, tau_1_leadTrk_pt, vbf_central_jet_type, vbf_central_jet_cleanJet_EC_LooseBad"
+    selection = "tau_0_leadTrk_pt > 20"
+    variable = "tau_0_matched_decay_mode, tau_0_matched_classifierParticleType, tau_0_matched_classifierParticleOrigin, tau_0_matched, tau_0_leadTrk_z0_sintheta, tau_0_leadTrk_z0_sig, tau_0_leadTrk_z0, tau_0_leadTrk_pvx_z0_sintheta, tau_0_leadTrk_pvx_z0_sig, tau_0_leadTrk_pvx_z0, tau_0_jet_width, tau_0_leadTrk_d0, tau_0_leadTrk_d0_sig, tau_0_leadTrk_pt, tau_0_leadTrk_phi, tau_1_leadTrk_pt, tau_0_leadTrk_eta, vbf_central_jet_type, vbf_central_jet_width, vbf_central_jet_cleanJet_EC_LooseBad"
     request = {}
     request["did"] = "group.phys-higgs:group.phys-higgs.Htt_hh_V03.mc16_13TeV.410470.PhPy8_A14_ttb_nonallh.D3.e6337_s3126_r9364_p3978.smPre_w_0_HS"
     request["tree-name"] = "NOMINAL"
     # request["selection"],request["branches-in-selection"] = tcut_to_qastle( selection, variable )
     request["selection"] = tcut_to_qastle( selection, variable )
-    # request["image"] = "sslhep/servicex_func_adl_uproot_transformer:pandas_to_arrow"
-    request["image"] = "sslhep/servicex_func_adl_uproot_transformer:develop"
+    request["image"] = "kyungeonchoi/servicex_func_adl_uproot_transformer:0.3"
+    # request["image"] = "sslhep/servicex_func_adl_uproot_transformer:develop"
     request["result-destination"] = "object-store"    
     request["result-format"] = "parquet"
     request["chunk-size"] = "1000"
