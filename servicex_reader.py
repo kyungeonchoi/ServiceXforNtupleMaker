@@ -9,6 +9,9 @@ from servicex_postprocessing import _download_output_files
 from servicex_timer_logger import time_measure, logger
 
 # from ServiceX
+inputDIDs = 'zll_vr_mc16d_part.txt'
+base_outpath = '/Users/kchoi/Work/UTAustin/Computing/ServiceX/ServiceXforNtupleMaker/V03_new/mc/zll_vr/mc16d/nom'
+
 
 # Load logger
 logger = logging.getLogger('servicex_logger')
@@ -34,12 +37,12 @@ _connect_servicex_backend(servicex_helm_chart_name, "servicex-app", 5000)
 
 
 # Step 3: Prepare transform requests
-servicex_request_list = _load_requests()
+servicex_request_list = _load_requests(inputDIDs)
 # t.set_time("t_prepare_request")
 
 
 # Step 4: Make requests
-request_id_list = _make_requests(servicex_request_list)
+request_id_list, did_list = _make_requests(servicex_request_list)
 # t.set_time("t_make_request")
 
 
@@ -54,7 +57,7 @@ _connect_servicex_backend(servicex_helm_chart_name, "minio", 9000)
 
 
 # Step 7: Download output
-_download_output_files(request_id_list)
+_download_output_files(request_id_list, did_list, base_outpath)
 # t.set_time("t_download_outputs")
 
 

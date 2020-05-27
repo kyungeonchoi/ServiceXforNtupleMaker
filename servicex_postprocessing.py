@@ -13,22 +13,19 @@ from minio import Minio
 
 logger = logging.getLogger('servicex_logger')
 
-# def _download_output_files(full_config, request_id_list):
-def _download_output_files(request_id_list):
+def _download_output_files(request_id_list, did_list, base_outpath):
     if len([x for x in request_id_list if x is not None]):
         minio_endpoint = "localhost:9000"
         minio_client = Minio(minio_endpoint,
             access_key='miniouser',
             secret_key='leftfoot1',
             secure=False)
-        for request_id in request_id_list:
+        for request_id, did in zip(request_id_list, did_list):
             if request_id is not None:
                 objects = minio_client.list_objects(request_id)
                 sample_files = list([file.object_name for file in objects])    
-                # out_path = full_config["Job0"]["Job"] + "/Histograms"
-                out_path = "test"
                 for i in range(len(sample_files)):
-                    minio_client.fget_object(request_id, sample_files[i], f'{out_path}/{request_id}_{sample_files[i].split(":")[-1]}')
+                    minio_client.fget_object(request_id, sample_files[i], f'{base_outpath}/{did.split(":")[1]}/{sample_files[i].split(":")[-1]}')
     else:
         return None
 

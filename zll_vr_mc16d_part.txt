@@ -1,0 +1,3 @@
+group.phys-higgs.Htt_zcr_V03.mc16_13TeV.308092.Sh221_PDF30_Zee2jets_Min_N_TChannel.D1.e5767_s3126_r10201_p3978.smPre_w_0_HS
+group.phys-higgs.Htt_zcr_V03.mc16_13TeV.308093.Sh221_PDF30_Zmm2jets_Min_N_TChannel.D1.e5767_s3126_r10201_p3978.smPre_w_0_HS
+group.phys-higgs.Htt_zcr_V03.mc16_13TeV.308094.Sh221_PDF30_Ztt2jets_Min_N_TChannel.D1.e5767_s3126_r10201_p3978.smPre_w_0_HS

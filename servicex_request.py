@@ -13,55 +13,40 @@ from servicex_timer_logger import _write_transformer_log
 logger = logging.getLogger('servicex_logger')
 
 
-# def load_requests(confFile: str):
-def _load_requests():    
+def _load_requests(inputDIDs: str):
     """
     Prepare requests for ServiceX
     """
+    with open(inputDIDs) as f:        
+        did_list = ['.'.join(line.split(".")[:2])+':'+line.rstrip() for line in f] # Add scope to DID
+        
 
     request_list = []    
-    # for sam in samples:
-    # selection = get_selection(confFile, sam)
-    # variable = full_config['Region0']['Variable'].split(",")[0]
-    selection = "tau_0_leadTrk_pt > 20"
-    variable = "tau_0_matched_decay_mode, tau_0_matched_classifierParticleType, tau_0_matched_classifierParticleOrigin, tau_0_matched, tau_0_leadTrk_z0_sintheta, tau_0_leadTrk_z0_sig, tau_0_leadTrk_z0, tau_0_leadTrk_pvx_z0_sintheta, tau_0_leadTrk_pvx_z0_sig, tau_0_leadTrk_pvx_z0, tau_0_jet_width, tau_0_leadTrk_d0, tau_0_leadTrk_d0_sig, tau_0_leadTrk_pt, tau_0_leadTrk_phi, tau_1_leadTrk_pt, tau_0_leadTrk_eta, vbf_central_jet_type, vbf_central_jet_width, vbf_central_jet_cleanJet_EC_LooseBad"
-    request = {}
-    request["did"] = "group.phys-higgs:group.phys-higgs.Htt_hh_V03.mc16_13TeV.410470.PhPy8_A14_ttb_nonallh.D3.e6337_s3126_r9364_p3978.smPre_w_0_HS"
-    request["tree-name"] = "NOMINAL"
-    # request["selection"],request["branches-in-selection"] = tcut_to_qastle( selection, variable )
-    request["selection"] = tcut_to_qastle( selection, variable )
-    request["image"] = "kyungeonchoi/servicex_func_adl_uproot_transformer:0.3"
-    # request["image"] = "sslhep/servicex_func_adl_uproot_transformer:develop"
-    request["result-destination"] = "object-store"    
-    request["result-format"] = "parquet"
-    request["chunk-size"] = "1000"
-    request["workers"] = "6"
-    # request["tcut-selection"] = selection
-    request_list.append(request)   
+    for did in did_list:
 
-    # return (request_list, full_config)
+        selection = "n_jets >= 0"
+        variable = "n_jets"
+        request = {}
+        request["did"] = did
+        request["tree-name"] = "NOMINAL"
+        request["selection"] = tcut_to_qastle( selection, variable )
+        request["image"] = "kyungeonchoi/servicex_root_transformer:0.1"
+        request["result-destination"] = "object-store"    
+        request["result-format"] = "parquet"
+        request["chunk-size"] = "1000"
+        request["workers"] = "3"
+
+        request_list.append(request)   
+
     return request_list
 
 
-def get_request_info(request: str, full_config):
-    """
-    Return sample name associated to the request id
-    """
-    for x, y in full_config.items():
-        if 'Sample' in x:
-            for key in y:
-                if y[key] == request["did"]:
-                    return y['Sample'].strip()
-
-
-def print_requests(request: str, full_config):
+def print_requests(request: str, request_id):
     console_print = {"Input DID": request["did"], \
-                    "Tree": request["tree-name"], \
-                    "Region": full_config["Region0"]["Region"], \
-                    "Variable": full_config['Region0']['Variable'].split(",")[0]}
+                    "Request ID": request_id}
     print(json.dumps(console_print, indent=4))
     request_log = request.copy()
-    del request_log['selection']
+    # del request_log['selection']
     logger.debug(json.dumps(request_log, indent=4))
 
 
@@ -72,27 +57,15 @@ def _make_requests(request_list):
     """    
     _get_existing_transformers()
     request_id_list = []
-    sample_list = []
-    for req in request_list:
-        # print_requests(req, full_config) # print simplified request query
-        # sample = get_request_info(req, full_config)
-
-        # del req['branches-in-selection']
-        # del req['tcut-selection']
-        # print(json.dumps(req, indent=4))
+    did_list = []
+    for req in request_list:        
         response = requests.post("http://localhost:5000/servicex/transformation", json=req)  
         request_id = response.json()["request_id"]
         request_id_list.append( request_id )
-        # sample_list.append(sample)
-        # else:
-        #     print("Do NOT submit above ServiceX transform requests")
-        #     request_id_list.append( None )
-        #     sample_list.append( None )
-        #     # return None
-    # for req, sam in zip(request_id_list, sample_list):
-    #     logger.info(f"Sample: {sam} - request id: {req}")
-    # return request_id_list, sample_list
-    return request_id_list
+        did_list.append(req['did'])
+        print_requests(req, request_id) # print simplified request query
+
+    return request_id_list, did_list
 
 # async def monitor_requests(request_id, sample, pos:int):
 async def _monitor_requests(request_id, pos:int):
