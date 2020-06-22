@@ -9,8 +9,8 @@ from servicex_postprocessing import _download_output_files
 from servicex_timer_logger import time_measure, logger
 
 # from ServiceX
-inputDIDs = 'zll_vr_mc16d_part.txt'
-base_outpath = '/Users/kchoi/Work/UTAustin/Computing/ServiceX/ServiceXforNtupleMaker/V03_new/mc/zll_vr/mc16d/nom'
+inputDIDs = 'test_list.txt'
+base_outpath = '/Users/kchoi/Work/UTAustin/Computing/ServiceX/ServiceXforNtupleMaker/V03_new/mc/hadhad/mc16e/nom/'
 
 
 # Load logger
