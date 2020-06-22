@@ -30,11 +30,11 @@ def _load_requests(inputDIDs: str):
         request["did"] = did
         request["tree-name"] = "NOMINAL"
         request["selection"] = tcut_to_qastle( selection, variable )
-        request["image"] = "kyungeonchoi/servicex_root_transformer:0.1"
+        request["image"] = "kyungeonchoi/servicex_pyroot_transformer:0.1"
         request["result-destination"] = "object-store"    
         request["result-format"] = "parquet"
         request["chunk-size"] = "1000"
-        request["workers"] = "3"
+        request["workers"] = "2"
 
         request_list.append(request)   
 
